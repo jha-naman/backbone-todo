@@ -39,7 +39,7 @@
         </script>
         <script type="text/template" charset="utf-8" id='category-template'>
             <h3> Category: <%- category %> </h3>
-            <div id=" <% category_id %>">
+            <div id=" <%- category_id %>">
                 
             </div>
         </script>
@@ -66,7 +66,6 @@ app.categoryView = Backbone.View.extend({
                 this.category = params.params;
             },
             render: function() {
-            var damn = this.category;
             this.$el.html(this.template(this.category));  // {category_id: id, category: "category"}
             return this;
             }
@@ -105,13 +104,19 @@ app.View = Backbone.View.extend({
                             return;
                         }
                     });
-            categories.forEach(this.addAllCategories, this);
-            app.List.forEach(this.addOne, this);
+            categories.forEach(this.addCategory, this);
+            //app.List.forEach(this.addOne, this);
         },
-        addAllCategories: function(category) {
+        addCategory: function(category) {
             var catView = new app.categoryView({ params: category });
             $("#todo-list").append(catView.render().el);
-            
+            var todoModels = app.List.where({'category': category.category});
+            todoModels.forEach(function(todo) {
+                        $('#' + category.category).html('');
+                        var view = new app.todoView({model: todo});
+                        var id = '#'+todo.get('category');
+                        $('#' + category.category).append(view.render().el);
+                    }, this);
         },
         addOne: function(todo) {
             var view = new app.todoView({model: todo});
