@@ -97,25 +97,27 @@ app.View = Backbone.View.extend({
         addAll: function() {
             $('#todo-list').html('');
             var categories_dup = app.List.pluck('category');
-            var categories = [];
+            var categories_nodup = [];
             categories_dup.forEach(function(category) {
-                        if (categories.indexOf(category) < 0){
-                        categories.push({'category': category, 'category_id': '#' + category});
+                        if (categories_nodup.indexOf(category) < 0){
+                            categories_nodup.push(category);
                             return;
                         }
+                    });
+            var categories = [];
+            categories_nodup.forEach(function(category) {
+                        categories.push({'category': category, 'category_id': '#' + category});
                     });
             categories.forEach(this.addCategory, this);
             //app.List.forEach(this.addOne, this);
         },
         addCategory: function(category) {
             var catView = new app.categoryView({ params: category });
-            $("#todo-list").append(catView.render().el);
+            $('#todo-list').append(catView.render().el);
             var todoModels = app.List.where({'category': category.category});
             todoModels.forEach(function(todo) {
-                        $('#' + category.category).html('');
-                        var view = new app.todoView({model: todo});
-                        var id = '#'+todo.get('category');
-                        $('#' + category.category).append(view.render().el);
+                    var view = new app.todoView({model: todo});
+                    catView.$el.append(view.render().el);
                     }, this);
         },
         addOne: function(todo) {
