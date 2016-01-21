@@ -1,0 +1,24 @@
+{
+  "name": "backbone-todo",
+  "version": "0.1.0",
+  "description": "Practice ToDo app in BB",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jha-naman/backbone-todo"
+  },
+  "author": "jha-naman",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/jha-naman/backbone-todo/issues"
+  },
+  "dependencies": {
+    "express": "~4.13.3",
+    "path": "~0.12.7",
+    "body-parser": "~1.14.2",
+    "mongoose": "~4.3.6"
+  }
+}

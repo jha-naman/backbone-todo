@@ -14,7 +14,7 @@ body {
     border: 1px solid blue;
 }
 
-.todo-title .todo-completed .todo-category .todo-toggle {
+.todo-title .todo-completed .todo-category {
     display: inline;
 }
 
