@@ -1,0 +1,33 @@
+body {
+    width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+}
+
+#container {
+    margin-top: 15px;
+}
+
+.todo-view {
+    width: 75%;
+    border: 1px solid blue;
+}
+
+.todo-title .todo-completed .todo-category .todo-toggle {
+    display: inline;
+}
+
+.todo-title {
+    clear: left;
+    float: left;
+}
+
+.todo-completed {
+    float: right;
+}
+
+.todo-toggle {
+    float:right;
+    clear:right;    
+}
