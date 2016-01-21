@@ -63,18 +63,25 @@ app.List = new app.todolist();
 app.categoryView = Backbone.View.extend({
             template: _.template($('#category-template').html()),
             initialize: function(params) {
-                this.category = params.params;
+                this.category = params.category;
+                this.models = params.models;
+                this.render();
             },
             render: function() {
             this.$el.html(this.template(this.category));  // {category_id: id, category: "category"}
+            _.each(this.models, this.addTodo, this);
             return this;
+            },
+            addTodo: function(model) {
+            var view = new app.todoView({'model': model});
+                this.$el.append(view.render().el);
             }
         });
 
 app.todoView = Backbone.View.extend({
             template: _.template($('#todo').html()),
             render: function() {
-                this.$el.html(this.template(this.model.toJSON()));
+                this.$el.html(this.template(this.model));
                 return this;
             }
         });
@@ -96,33 +103,13 @@ app.View = Backbone.View.extend({
         },
         addAll: function() {
             $('#todo-list').html('');
-            var categories_dup = app.List.pluck('category');
-            var categories_nodup = [];
-            categories_dup.forEach(function(category) {
-                        if (categories_nodup.indexOf(category) < 0){
-                            categories_nodup.push(category);
-                            return;
-                        }
-                    });
-            var categories = [];
-            categories_nodup.forEach(function(category) {
-                        categories.push({'category': category, 'category_id': '#' + category});
-                    });
-            categories.forEach(this.addCategory, this);
-            //app.List.forEach(this.addOne, this);
+            var groupedByCategory = _.groupBy(app.List.toJSON(), 'category');
+            _.each(groupedByCategory, this.addCategory);
         },
-        addCategory: function(category) {
-            var catView = new app.categoryView({ params: category });
-            $('#todo-list').append(catView.render().el);
-            var todoModels = app.List.where({'category': category.category});
-            todoModels.forEach(function(todo) {
-                    var view = new app.todoView({model: todo});
-                    catView.$el.append(view.render().el);
-                    }, this);
-        },
-        addOne: function(todo) {
-            var view = new app.todoView({model: todo});
-            $('#todo-list').append(view.render().el);
+        addCategory: function(models, category) {
+            var params = {category: {'category': category, category_id: '#'+category}, 'models': models};
+            var catView = new app.categoryView( params );
+            $('#todo-list').append(catView.el);
         },
         toggle: function(element) {
            var model = app.List.get(parseInt(element.id));
