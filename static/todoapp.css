@@ -5,29 +5,38 @@ body {
     text-align: center;
 }
 
+.title {
+    background: brown;
+    color: white;
+}
+
 #container {
     margin-top: 15px;
 }
 
 .todo-view {
-    width: 75%;
     border: 1px solid blue;
 }
 
-.todo-title .todo-completed .todo-category {
-    display: inline;
+.todo-title .todo-completed .todo-category .todo-toggle {
+    display: inline-block;
 }
-
+/*
 .todo-title {
-    clear: left;
     float: left;
+    width: 40%;
 }
 
 .todo-completed {
-    float: right;
+    float: left;
+    width: 10%;
 }
 
-.todo-toggle {
-    float:right;
-    clear:right;    
+.todo-category {
+    float: left;
+    width: 40%;
 }
+.todo-toggle {
+    float:left;
+    width: 10%;
+} */

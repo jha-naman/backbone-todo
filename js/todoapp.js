@@ -1,5 +1,3 @@
-$(document).ready(function() {
-
 var app = {}
 
 app.todo = Backbone.Model.extend({
@@ -9,9 +7,10 @@ app.todo = Backbone.Model.extend({
                 title: '',
                 category: 'misc',
                 completed: false,
-                id: undefined
+            
+            },
 
-            }
+            url: 'todo'
 
         });
 
@@ -19,8 +18,7 @@ app.todolist = Backbone.Collection.extend({
 
             model: app.todo,
 
-            localStorage: new Store('ToDo-store')
-
+            url: '/todo'
         });
 
 app.List = new app.todolist();
@@ -50,6 +48,10 @@ app.categoryView = Backbone.View.extend({
 
             addTodo: function(model) {
 
+            if (!model._id) {
+                model._id =model._cid;
+            }
+
             var view = new app.todoView({'model': model});
             this.$el.append(view.render().el);
 
@@ -75,8 +77,9 @@ app.View = Backbone.View.extend({
 
         initialize: function() {
 
-            app.List.on('add reset', this.display, this);
-            app.List.fetch();
+
+            app.List.on('add reset change', this.display, this);
+            app.List.fetch({reset: true});
 
         },
 
@@ -87,14 +90,12 @@ app.View = Backbone.View.extend({
 
         },
 
-        id: 0,
-
         addToList: function() {
 
             var title = $('#title').val();
             var category = $('#category').val();
 
-            app.List.add({'title': title, 'category': category, completed: false, id: ++(this.id)});
+            app.List.create({'title': title, 'category': category, completed: false});
 
         },
 
@@ -118,8 +119,9 @@ app.View = Backbone.View.extend({
 
         toggle: function(element) {
 
-           var model = app.List.get(parseInt(element.id));
+           var model = app.List.findWhere({_id: element.id.trim()});
            model.set('completed', !model.get('completed'));
+           model.sync('update', model);
 
            appView.display();
 
@@ -127,6 +129,5 @@ app.View = Backbone.View.extend({
 
 });
 
-window.appView = new app.View();
+appView = new app.View();
 
-});

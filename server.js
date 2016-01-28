@@ -4,20 +4,14 @@ var express = require('express'),
     path = require('path');
 
 var app = express();
+mongoose.connect('mongodb://localhost/listoftodo');
 
-app.use(express.static(path.join(__dirname, 'js')));
-app.use(express.static(path.join(__dirname, 'static')));
-app.use(bodyParser());
 
 var application_route = __dirname;
+app.use(express.static(path.join(application_route, 'js')));
+app.use(express.static(path.join(application_route, 'static')));
+app.use(bodyParser());
 
-app.get('/', function(req, res) {
-    res.sendFile(path.join(application_route,'index.html'));
-});
-
-app.listen(3000);
-
-mongoose.connect('mongodb://localhost/ToDoList');
 
 var todo = mongoose.Schema({
     title: String,
@@ -26,6 +20,12 @@ var todo = mongoose.Schema({
 });
 
 var todoModel = mongoose.model('todo', todo);
+
+
+app.get('/', function(req, res) {
+    res.sendFile(path.join(application_route,'index.html'));
+});
+
 
 app.get('/todo', function(req, res) {
      todoModel.find(function(err, result) {
@@ -40,59 +40,49 @@ app.post('/todo', function(req, res) {
     var todo = new todoModel({
         title : req.body.title,
         category: req.body.category,
-        completed: req.body.completed
+        completed: req.body.completed,
     });
     todo.save(function(err) {
         if (err) {
-            return;
+            return res.send('');
         };
-        console.log(todo);
         res.send(todo);
     });
 });
 
 app.get('/todo/:id', function(req, res) {
-    todoModel.find(function(err, result) {
+    todoModel.findById(req.params.id, function(err, result) {
         if (err) {
             console.log('Error in get todo/id');
+            return res.send('');
         }
-        todoModel.find({'id': req.params.id}, function(err, result) {
-            if (err) return;
             res.send(result);
-        });
     });
 });
 
-app.put('/todo/:id', function(req, res) {
-    todoModel.find( {'id': request.params.id} , function( err, todo ) {
-        todo.title = request.body.title;
-        todo.category = request.body.category;
-        todo.completed = request.body.complated;
-   
-        return todo.save( function( err ) {
-            if( !err ) {
-                console.log( 'todo updated' );
-                return response.send( todo );
-            } else {
-                console.log( err );
-            }
-       });
-    }); 
-});
-
-
-app.delete('todo/:id', function(req, res) {
-    todoModel.find({'id': req.params}, function(err, todo) {
+app.put('/todo/', function(req, res) {
+    todoModel.findById(req.body._id, function(err, todo) {
         if (err) {
-            console.log('Error in delete todo id');
-            return;
-        };
-        todo.remove(function(err) {
-         if (err) {
-            console.log('Error in delete todo id');
-            return;
-        };
-        res.send('')   
+            console.log('error in put')
+            return res.send('');
+        }
+        todo.title = req.body.title;
+        todo.category = req.body.category;
+        todo.completed = req.body.completed;
+        todo.save(function(err) {
+            if (!err) {
+                return res.send(todo);
+            }
+            res.send('err');
         });
     });
 });
+
+
+app.delete('/todo/:id', function(req, res) {
+    todoModel.findByIdAndRemove(req.params.id, function(err) {if (err) console.log('error')});
+    res.send('');
+});
+
+
+app.listen(3000);
