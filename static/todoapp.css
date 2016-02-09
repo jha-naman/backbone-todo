@@ -3,11 +3,12 @@ body {
     margin-right: auto;
     margin-left: auto;
     text-align: center;
+    background: #fafafa;
 }
 
 .title {
-    background: brown;
-    color: white;
+    background: #777;
+    font-weight: bold;
 }
 
 #container {

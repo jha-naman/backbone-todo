@@ -15,6 +15,8 @@ app.categoryView = Backbone.View.extend({
 
         this.$el.html(this.template(this.category));
 
+        $("#todo-list").append(this.el);
+        
         _.each(this.models, this.addTodo, this);
 
         return this;
@@ -28,7 +30,7 @@ app.categoryView = Backbone.View.extend({
         }
 
         var view = new app.todoView({ 'model': model });
-        this.$el.append(view.render().el);
+        $("#"+ this.category.category).append(view.render().el);
 
     }
 });

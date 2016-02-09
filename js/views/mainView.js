@@ -14,7 +14,7 @@ app.View = Backbone.View.extend({
     events: {
 
         // starts from here after initialization
-        'click #add': 'addToList',
+        'submit #newTask': 'addToList',
 
     },
 
@@ -38,7 +38,7 @@ app.View = Backbone.View.extend({
 
     displayCategory: function (models, category) {
 
-        var params = { category: { 'category': category, category_id: '#' + category }, 'models': models };
+        var params = { category: { 'category': category, category_id: category }, 'models': models };
 
         var catView = new app.categoryView(params);
         $('#todo-list').append(catView.el);
