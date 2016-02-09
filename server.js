@@ -26,7 +26,6 @@ app.get('/', function(req, res) {
     res.sendFile(path.join(application_route,'index.html'));
 });
 
-
 app.get('/todo', function(req, res) {
      todoModel.find(function(err, result) {
         if (err) {
@@ -78,11 +77,10 @@ app.put('/todo/', function(req, res) {
     });
 });
 
-
 app.delete('/todo/:id', function(req, res) {
     todoModel.findByIdAndRemove(req.params.id, function(err) {if (err) console.log('error')});
     res.send('');
 });
 
 
-app.listen(3000);
+app.listen(3001);

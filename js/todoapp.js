@@ -1,4 +1,4 @@
-var app = {}
+var app = {};
 
 app.todo = Backbone.Model.extend({
 
@@ -7,7 +7,7 @@ app.todo = Backbone.Model.extend({
                 title: '',
                 category: 'misc',
                 completed: false,
-            
+
             },
 
             url: 'todo'
@@ -38,7 +38,7 @@ app.categoryView = Backbone.View.extend({
 
             render: function() {
 
-            this.$el.html(this.template(this.category));  
+            this.$el.html(this.template(this.category));
 
             _.each(this.models, this.addTodo, this);
 
