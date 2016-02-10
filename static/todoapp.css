@@ -7,10 +7,15 @@ body {
 }
 
 .title {
-    background: #777;
+    background: #EAE3E3;
     font-weight: bold;
+    color: #524E4E;
 }
 
+.task {
+    display: block;
+    width: 100%;
+}
 #container {
     margin-top: 15px;
 }

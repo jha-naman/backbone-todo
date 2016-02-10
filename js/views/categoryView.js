@@ -14,6 +14,7 @@ app.categoryView = Backbone.View.extend({
     render: function () {
 
         this.$el.html(this.template(this.category));
+        this.$el.attr("id", this.category.category);
 
         $("#todo-list").append(this.el);
         
