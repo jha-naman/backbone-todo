@@ -10,8 +10,6 @@ app.todo = Backbone.Model.extend({
 
     },
 
-    url: 'todo'
-
 });
 
 app.todolist = Backbone.Collection.extend({

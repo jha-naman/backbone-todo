@@ -35,8 +35,11 @@ app.get('/todo', function(req, res) {
     }); 
 });
 
+
+
 app.post('/todo', function(req, res) {
     var todo = new todoModel({
+        id: req.body.id,
         title : req.body.title,
         category: req.body.category,
         completed: req.body.completed,
@@ -78,7 +81,7 @@ app.put('/todo/', function(req, res) {
 });
 
 app.delete('/todo/:id', function(req, res) {
-    todoModel.findByIdAndRemove(req.params.id, function(err) {if (err) console.log('error')});
+    todoModel.findByIdAndRemove(req.params.id, function(err) {if (err) console.log(err)});
     res.send('');
 });
 

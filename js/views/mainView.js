@@ -6,7 +6,7 @@ app.View = Backbone.View.extend({
 
     initialize: function () {
 
-        app.List.on('add reset change', this.display, this);
+        app.List.on('add reset change destroy', this.display, this);
         app.List.fetch({ reset: true });
 
     },
@@ -18,8 +18,9 @@ app.View = Backbone.View.extend({
 
     },
 
-    addToList: function () {
+    addToList: function (event) {
 
+        event.preventDefault();
         var title = $('#title').val();
         var category = $('#category').val();
 
