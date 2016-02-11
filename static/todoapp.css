@@ -11,6 +11,11 @@ body {
     font-weight: bold;
     color: #524E4E;
 }
+textarea {
+    overflow: hidden;
+    height: 25px;
+    resize: none;
+}
 
 .task {
     display: block;

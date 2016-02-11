@@ -9,7 +9,10 @@ app.todoView = Backbone.View.extend({
     className: "task",
 
     events: {
-        "keydown": "keyEvents"
+        "keydown": "keyEvents",
+        "paste": "resize",
+        "cut": "resize",
+        "keyup": "resize",
     },
 
     render: function () {
@@ -19,22 +22,39 @@ app.todoView = Backbone.View.extend({
 
     },
 
+    resize: function () {
+        this.$el.css("height", "auto");
+        this.$el.css("height", app.dimensionUtils.getTextAreaHeightFromScrollHeight(this.el.scrollHeight) + "px");
+    },
+
     keyEvents: function () {
+        // this.resize();
+
         var self = this;
         var input = this.$el.val();
+        var previous = this.previous;
+        this.previous = event.which;
 
         var handler = {
-            "40": moveOnUpArrow,
-            "38": moveOnDownArrow,
+            "38": moveOnUpArrow,
+            "40": moveOnDownArrow,
             "8": deleteOnBackSpace,
+            "13": saveOnEnter
         };
 
         function moveOnDownArrow() {
-            self.$el.prev().focus();
+            if (self.$el.next().length) {
+                self.$el.next().focus();
+                return;
+            }
+            if (self.$el.parent().next().length) {
+                var next = self.$el.parent().next();
+                next.children()[0].focus();
+            }
         }
 
         function moveOnUpArrow() {
-            self.$el.next().focus();
+            self.$el.prev().focus();
         }
 
         function deleteOnBackSpace() {
@@ -48,10 +68,17 @@ app.todoView = Backbone.View.extend({
             }
         }
 
+        function saveOnEnter() {
+            if (/^:.*/.test(input)) {
+                console.log("its a category");
+            }
+        }
+
         var fn = handler[String(event.which)];
         if (fn) {
             fn();
         }
+
     }
 
 });
