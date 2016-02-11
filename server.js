@@ -29,10 +29,10 @@ app.get('/', function(req, res) {
 app.get('/todo', function(req, res) {
      todoModel.find(function(err, result) {
         if (err) {
-            return console.log('Error in get /todo'); 
-        }; 
+            return console.log('Error in get /todo');
+        };
         return res.send(result);
-    }); 
+    });
 });
 
 
@@ -62,8 +62,8 @@ app.get('/todo/:id', function(req, res) {
     });
 });
 
-app.put('/todo/', function(req, res) {
-    todoModel.findById(req.body._id, function(err, todo) {
+app.put('/todo/:id', function(req, res) {
+    todoModel.findById(req.params.id, function(err, todo) {
         if (err) {
             console.log('error in put')
             return res.send('');
@@ -82,7 +82,8 @@ app.put('/todo/', function(req, res) {
 
 app.delete('/todo/:id', function(req, res) {
     todoModel.findByIdAndRemove(req.params.id, function(err) {if (err) console.log(err)});
-    res.send('');
+    // is the call to delete not a xhr??
+    // res.send('');
 });
 
 

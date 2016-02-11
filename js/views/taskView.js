@@ -15,6 +15,11 @@ app.todoView = Backbone.View.extend({
         "keyup": "resize",
     },
 
+    keysPressed: {
+        "17": false, // ctrl
+        "9": false // tab
+    },
+
     render: function () {
 
         this.$el.html(this.template(this.model));
@@ -22,24 +27,27 @@ app.todoView = Backbone.View.extend({
 
     },
 
-    resize: function () {
+    resize: function (event) {
         this.$el.css("height", "auto");
         this.$el.css("height", app.dimensionUtils.getTextAreaHeightFromScrollHeight(this.el.scrollHeight) + "px");
+        if (event.which == 17 || event.which == 9) {
+            this.keysPressed[String(event.which)] = false;
+        }
     },
 
-    keyEvents: function () {
+    keyEvents: function (event) {
         // this.resize();
 
         var self = this;
         var input = this.$el.val();
-        var previous = this.previous;
-        this.previous = event.which;
 
         var handler = {
             "38": moveOnUpArrow,
             "40": moveOnDownArrow,
             "8": deleteOnBackSpace,
-            "13": saveOnEnter
+            "13": saveOnEnter,
+            "17": setKeyPressedToFalse, //ctrl
+            "9": setKeyPressedToFalse, // tab
         };
 
         function moveOnDownArrow() {
@@ -57,28 +65,46 @@ app.todoView = Backbone.View.extend({
             self.$el.prev().focus();
         }
 
-        function deleteOnBackSpace() {
-            if (!input) {
-                var model = app.List.findWhere(self.model);
+        function getModelFromCollection() {
+            var model = app.List.findWhere(self.model);
                 if (!model.get("id")) {
                     model.set("id", model.get("_id"));
                 }
+                return model;
+        }
+
+        function deleteOnBackSpace() {
+            var model = getModelFromCollection();
+            if (!input) {
                 model.destroy();
                 model.sync("delete", model);
+            } else if (self.keysPressed[17]) {
+                model.set("completed", false);
+                model.sync("update", model);
             }
+        }
+
+        function setKeyPressedToFalse() {
+            self.keysPressed[String(event.which)] = true;
         }
 
         function saveOnEnter() {
             if (/^:.*/.test(input)) {
-                console.log("its a category");
+                // its a category handle it differently
             }
+            var model = getModelFromCollection();
+            if (self.keysPressed[17]) {
+                model.set("completed", true);
+            }
+            model.save();
+            model.sync("update", model);
         }
 
         var fn = handler[String(event.which)];
         if (fn) {
             fn();
+            event.stopPropagation();
         }
-
     }
 
 });
