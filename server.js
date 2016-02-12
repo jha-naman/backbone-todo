@@ -82,8 +82,7 @@ app.put('/todo/:id', function(req, res) {
 
 app.delete('/todo/:id', function(req, res) {
     todoModel.findByIdAndRemove(req.params.id, function(err) {if (err) console.log(err)});
-    // is the call to delete not a xhr??
-    // res.send('');
+    res.send('');
 });
 
 
