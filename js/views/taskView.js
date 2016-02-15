@@ -15,6 +15,17 @@ app.todoView = Backbone.View.extend({
         "keyup": "resize",
     },
 
+    initialize: function () {
+        this.updateTask = _.debounce(function () {
+            var input = this.$el.val();
+            if (input) {
+                var model = app.List.get(this.model._id);
+                model.set("title", input);
+                model.save();
+            }
+        }.bind(this), 2000);
+    },
+
     keysPressed: {
         "17": false, // ctrl
         "9": false // tab
@@ -27,6 +38,10 @@ app.todoView = Backbone.View.extend({
 
     },
 
+    update: function () {
+        this.updateTask();
+    },
+
     resize: function (event) {
         this.$el.css("height", "auto");
         this.$el.css("height", app.dimensionUtils.getTextAreaHeightFromScrollHeight(this.el.scrollHeight) + "px");
@@ -36,10 +51,10 @@ app.todoView = Backbone.View.extend({
     },
 
     keyEvents: function (event) {
-        // this.resize();
 
         var self = this;
         var input = this.$el.val();
+        var model = getModelFromCollection();
 
         var handler = {
             "38": moveOnUpArrow,
@@ -51,13 +66,19 @@ app.todoView = Backbone.View.extend({
         };
 
         function moveOnDownArrow() {
-            if (self.$el.next().length) {
-                self.$el.next().focus();
-                return;
-            }
-            if (self.$el.parent().next().length) {
-                var next = self.$el.parent().next();
-                next.children()[0].focus();
+            if (!self.keysPressed[17]) {
+                if (self.$el.next().length) {
+                    self.$el.next().focus();
+                    return;
+                }
+                if (self.$el.parent().next().length) {
+                    var next = self.$el.parent().next();
+                    next.children()[0].focus();
+                }
+            } else {
+
+                var newTask = app.List.create({ title: "", category: model.get("category") });
+
             }
         }
 
@@ -67,20 +88,16 @@ app.todoView = Backbone.View.extend({
 
         function getModelFromCollection() {
             var model = app.List.findWhere(self.model);
-                if (!model.get("id")) {
-                    model.set("id", model.get("_id"));
-                }
-                return model;
+            return model;
         }
 
         function deleteOnBackSpace() {
-            var model = getModelFromCollection();
+
             if (!input) {
                 model.destroy();
-                model.sync("delete", model);
+                event.preventDefault();
             } else if (self.keysPressed[17]) {
                 model.set("completed", false);
-                model.sync("update", model);
             }
         }
 
@@ -89,21 +106,16 @@ app.todoView = Backbone.View.extend({
         }
 
         function saveOnEnter() {
-            if (/^:.*/.test(input)) {
-                // its a category handle it differently
-            }
-            var model = getModelFromCollection();
             if (self.keysPressed[17]) {
                 model.set("completed", true);
             }
-            model.save();
-            model.sync("update", model);
         }
+
+        this.update();
 
         var fn = handler[String(event.which)];
         if (fn) {
-            fn();
-            event.stopPropagation();
+            return fn();
         }
     }
 
