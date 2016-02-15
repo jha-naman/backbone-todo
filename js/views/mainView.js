@@ -24,6 +24,14 @@ app.View = Backbone.View.extend({
         var title = $('#title').val();
         var category = $('#category').val();
 
+        if (/^:.*/.test(title)) {
+
+                var categoryName = title.replace(":", "");
+                app.List.create({title: "", category: categoryName, completed: false});
+                return;
+
+            }
+
         app.List.create({ 'title': title, 'category': category, completed: false });
 
     },
