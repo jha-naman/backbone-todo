@@ -9,6 +9,7 @@ app.todo = Backbone.Model.extend({
         completed: false,
 
     },
+    idAttribute: '_id'
 
 });
 
