@@ -1,6 +1,6 @@
 {
   "name": "backbone-todo",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Practice ToDo app in BB",
   "main": "index.js",
   "scripts": {
